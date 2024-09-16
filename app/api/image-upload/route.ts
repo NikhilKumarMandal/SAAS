@@ -1,23 +1,27 @@
-import { NextRequest,NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from "@clerk/nextjs/server";
 
-    // Configuration
-    cloudinary.config({ 
-        cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, 
-        api_key: process.env.CLOUDINARY_API_KEY, 
-        api_secret: process.env.CLOUDINARY_API_SECRET
-    });
+// Configuration
+cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-
-interface CloudinaryUploadResult { 
+interface CloudinaryUploadResult {
     public_id: string;
-    [key: string]: any;
+    secure_url: string;
+    format: string;
+    resource_type: string;
+    bytes: number;
+    created_at: string;
+    // Use Record<string, unknown> to handle other optional fields dynamically
+    [key: string]: unknown;
 }
 
 export async function POST(request: NextRequest) {
-
-    const { userId } = auth()
+    const { userId } = auth();
 
     if (!userId) {
         return NextResponse.json(
@@ -27,8 +31,8 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const fromData = await request.formData();
-        const file = fromData.get('file') as File | null;
+        const formData = await request.formData();
+        const file = formData.get('file') as File | null;
 
         if (!file) {
             return NextResponse.json(
@@ -46,12 +50,12 @@ export async function POST(request: NextRequest) {
                     { folder: "saas-images" },
                     (error, result) => {
                         if (error) reject(error);
-                        else resolve(result as CloudinaryUploadResult)
+                        else resolve(result as CloudinaryUploadResult);
                     }
-                )
+                );
                 uploadStream.end(buffer);
             }
-        ) 
+        );
 
         return NextResponse.json(
             {
@@ -60,16 +64,16 @@ export async function POST(request: NextRequest) {
             {
                 status: 200
             }
-        )
+        );
     } catch (error) {
         return NextResponse.json(
             {
-                error: "Upload image Failed"
+                error: "Upload image failed"
             },
             {
                 status: 500
             }
-        )
+        );
     }
-
 }
+

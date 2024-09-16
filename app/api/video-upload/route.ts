@@ -25,8 +25,14 @@ export async function POST(request: NextRequest) {
 
     try {
 
-        //todo to check user
+     const { userId } = auth()
 
+    if (!userId) {
+        return NextResponse.json(
+            { error: "Unauthorized" },
+            { status: 401 }
+        );
+    }
     if(
         !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
         !process.env.CLOUDINARY_API_KEY ||
