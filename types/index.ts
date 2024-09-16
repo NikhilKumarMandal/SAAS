@@ -3,8 +3,8 @@ export interface Video {
   title: string;
   description: string | null;
   publicId: string;
-  originalSize: string; // Corrected spelling
-  compressedSize: string; // Corrected spelling
+  originalSize: number; 
+  compressedSize: number; 
   duration: number;
   createdAt: Date;
   updatedAt: Date;

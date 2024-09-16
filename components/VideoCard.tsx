@@ -4,7 +4,7 @@ import { Download, Clock, FileDown, FileUp } from "lucide-react";
 import dayjs from 'dayjs';
 import realtiveTime from "dayjs/plugin/relativeTime"
 import {filesize} from "filesize"
-import { Video } from '@prisma/client';
+import { Video } from '@/types';
 
 dayjs.extend(realtiveTime)
 
@@ -60,7 +60,7 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
       }, []);
 
       const compressionPercentage = Math.round(
-        (1 - Number(video.comparessedSize) / Number(video.oringinalSize)) * 100
+        (1 - Number(video.compressedSize) / Number(video.originalSize)) * 100
       );
 
       useEffect(() => {
@@ -94,6 +94,7 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
                 />
               )
             ) : (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={getThumbnailUrl(video.publicId)}
                 alt={video.title}
@@ -118,14 +119,14 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
                 <FileUp size={18} className="mr-2 text-primary" />
                 <div>
                   <div className="font-semibold">Original</div>
-                  <div>{formatSize(Number(video.oringinalSize))}</div>
+                  <div>{formatSize(Number(video.originalSize))}</div>
                 </div>
               </div>
               <div className="flex items-center">
                 <FileDown size={18} className="mr-2 text-secondary" />
                 <div>
                   <div className="font-semibold">Compressed</div>
-                  <div>{formatSize(Number(video.comparessedSize))}</div>
+                  <div>{formatSize(Number(video.compressedSize))}</div>
                 </div>
               </div>
             </div>
