@@ -69,16 +69,16 @@ export async function POST(request: NextRequest) {
             uploadStream.end(buffer);
         });
 
-const video = await prisma.video.create({
-    data: {
-        title,
-        description,
-        publicId: result.public_id,
-        oringinalSize: originalSize, // Use the existing typo field name
-        comparessedSize: String(result.bytes), // Use the existing typo field name
-        duration: result.duration || 0,
-    }
-});
+        const video = await prisma.video.create({
+            data: {
+                title,
+                description,
+                publicId: result.public_id,
+                oringinalSize: originalSize, // Using the field name with the typo
+                comparessedSize: String(result.bytes), // Correct if needed
+                duration: result.duration || 0,
+            }
+        });
 
         return NextResponse.json(video);
     } catch (error) {
@@ -88,3 +88,4 @@ const video = await prisma.video.create({
         await prisma.$disconnect();
     }
 }
+
