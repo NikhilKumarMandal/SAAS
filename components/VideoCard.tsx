@@ -35,7 +35,6 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
             src: publicId,
             width: 1920,
             height: 1080,
-
         })
     }, [])
 
@@ -45,10 +44,10 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
             width: 400,
             height: 225,
             rawTransformations: ["e_preview:duration_15:max_seg_9:min_seg_dur_1"]
-
         })
     }, [])
 
+    // Update formatSize to handle invalid sizes
     const formatSize = useCallback((size: number) => {
         return filesize(size)
     }, [])
@@ -63,15 +62,15 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
         (1 - Number(video.compressedSize) / Number(video.originalSize)) * 100
       );
 
-      useEffect(() => {
+    useEffect(() => {
         setPreviewError(false);
-      }, [isHovered]);
+    }, [isHovered]);
 
-      const handlePreviewError = () => {
+    const handlePreviewError = () => {
         setPreviewError(true);
-      };
+    };
 
-      return (
+    return (
         <div
           className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
           onMouseEnter={() => setIsHovered(true)}
@@ -119,14 +118,16 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
                 <FileUp size={18} className="mr-2 text-primary" />
                 <div>
                   <div className="font-semibold">Original</div>
-                  <div>{formatSize(Number(video.originalSize))}</div>
+                  {/* Ensure valid size with fallback */}
+                  <div>{formatSize(Number(video.originalSize) || 0)}</div>
                 </div>
               </div>
               <div className="flex items-center">
                 <FileDown size={18} className="mr-2 text-secondary" />
                 <div>
                   <div className="font-semibold">Compressed</div>
-                  <div>{formatSize(Number(video.compressedSize))}</div>
+                  {/* Ensure valid size with fallback */}
+                  <div>{formatSize(Number(video.compressedSize) || 0)}</div>
                 </div>
               </div>
             </div>
@@ -146,7 +147,7 @@ const  VideoCard: React.FC<VideoCardProps> = ({video, onDownload}) => {
             </div>
           </div>
         </div>
-      );
+    );
 }
 
-export default VideoCard
+export default VideoCard;

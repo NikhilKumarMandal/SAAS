@@ -3,7 +3,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
 import { PrismaClient } from '@prisma/client';
 
-
 const prisma = new PrismaClient()
 
 // Configuration
@@ -24,8 +23,10 @@ export async function POST(request: NextRequest) {
 
 
     try {
-
-        //todo to check user
+        const {userId} = auth()
+        if (!userId) {
+            return NextResponse.json({error: "Unauthorized"},{status: 401})
+        }
 
     if(
         !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
                 const uploadStream = cloudinary.uploader.upload_stream(
                     {
                         resource_type: "video",
-                        folder: "video-uploads",
+                        folder: "saas-videos",
                         transformation: [
                             {quality: "auto", fetch_format: "mp4"},
                         ]
