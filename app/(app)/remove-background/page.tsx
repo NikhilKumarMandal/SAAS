@@ -46,20 +46,36 @@ export default function SocialShare() {
         }
     };
 
-        const handleDownload = () => {
-        if (!imageRef.current) return;
+const handleDownload = () => {
+    if (!imageRef.current) return;
 
-        fetch(imageRef.current.src)
-        .then((response) => response.blob())
+    const imageUrl = imageRef.current.src;
+    
+    // Check if the image URL is valid
+    if (!imageUrl) {
+        console.error("Image URL is not defined");
+        return;
+    }
+
+    fetch(imageUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch the image");
+            }
+            return response.blob();
+        })
         .then((blob) => {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = `image.png`;
+            link.download = `image.png`; // You can also use a dynamic filename if needed
             document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link); 
+            document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
+        })
+        .catch((error) => {
+            console.error("Error downloading the image:", error);
         });
 };
 
@@ -106,7 +122,8 @@ export default function SocialShare() {
                         width="960"
                         height="600"
                         src={uploadedImage}
-                        sizes="100vw"
+                    sizes="100vw"
+                    removeBackground
                         alt="transformed image"
                         crop="fill"
                         gravity='auto'

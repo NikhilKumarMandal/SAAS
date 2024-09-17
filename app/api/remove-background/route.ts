@@ -49,11 +49,15 @@ export async function POST(request: NextRequest) {
                     {
                         folder: "saas-images",
                         resource_type: "image",
-                        background_removal: "cloudinary_ai"
-                     },
+                        background_removal: "cloudinary_ai" 
+                    },
                     (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result as CloudinaryUploadResult);
+                        if (error) {
+                            console.error("Cloudinary upload error:", error); // Added logging
+                            reject(error);
+                        } else {
+                            resolve(result as CloudinaryUploadResult);
+                        }
                     }
                 );
                 uploadStream.end(buffer);
@@ -62,13 +66,15 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(
             {
-                publicId: result.public_id
+                publicId: result.public_id,
+                url: result.secure_url // Added URL to response
             },
             {
                 status: 200
             }
         );
     } catch (error) {
+        console.error("Image upload failed:", error); // Added logging
         return NextResponse.json(
             {
                 error: "Upload image failed"
@@ -79,4 +85,5 @@ export async function POST(request: NextRequest) {
         );
     }
 }
+
 
